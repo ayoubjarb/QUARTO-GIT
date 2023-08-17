@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="quantmit">
+<meta name="dcterms.date" content="2023-08-15">
+
+<title>Metaanalysis in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Metaanalysisquarto_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Metaanalysisquarto_files/libs/quarto-html/quarto.js"></script>
+<script src="Metaanalysisquarto_files/libs/quarto-html/popper.min.js"></script>
+<script src="Metaanalysisquarto_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Metaanalysisquarto_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Metaanalysisquarto_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Metaanalysisquarto_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Metaanalysisquarto_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Metaanalysisquarto_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Metaanalysisquarto_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Metaanalysis in R</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>quantmit </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 15, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link active" data-scroll-target="#importing-the-data">IMPORTING THE DATA</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-importing-code" id="toc-understanding-the-importing-code" class="nav-link" data-scroll-target="#understanding-the-importing-code">Understanding the importing code</a></li>
+  </ul></li>
+  <li><a href="#the-analysis" id="toc-the-analysis" class="nav-link" data-scroll-target="#the-analysis">THE ANALYSIS</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">DATA PREPARATION</a>
+  <ul class="collapse">
+  <li><a href="#meta-analysis" id="toc-meta-analysis" class="nav-link" data-scroll-target="#meta-analysis">META ANALYSIS</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">INTERPRETATION</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="importing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-data">IMPORTING THE DATA</h2>
+<section id="understanding-the-importing-code" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-importing-code">Understanding the importing code</h3>
+<ol type="1">
+<li><p><strong><code>library(readxl)</code></strong>: This line of code loads the <code>readxl</code> package. The <code>readxl</code> package is a tool used in R for reading Excel files.</p></li>
+<li><p><strong><code>metaanalysis_data &lt;- read_excel("~/git/RRcourse2023/13. Metaanalysis/data/metaanalysis_data.xlsx")</code></strong>:</p>
+<ul>
+<li><code>metaanalysis_data</code>: This is a variable that will hold the data read from the Excel file.</li>
+<li><code>read_excel()</code>: This function, part of the <code>readxl</code> package, is employed to read Excel files.</li>
+<li><code>"~/git/RRcourse2023/13. Metaanalysis/data/metaanalysis_data.xlsx"</code>: This is the file path pointing to the specific Excel file to be read. The <code>~</code> signifies the user’s home directory, and the rest of the path defines the directory structure leading to the Excel file.</li>
+</ul></li>
+</ol>
+<p>In summary, the provided code employs the <code>readxl</code> package to read data from the designated Excel file and then stores that data in the variable <code>metaanalysis_data</code>. This data can subsequently be used for further analysis or exploration within the R environment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>metaanalysis_data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"~/git/RRcourse2023/13. Metaanalysis/data/metaanalysis_data.xlsx"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">head</span>(metaanalysis_data)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 28
+  Study            `Female authors` `Male authors` `Age (months)` N_boys N_girls
+  &lt;chr&gt;                       &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+1 Alexander &amp; Sae…                2              0           19.5     47      47
+2 Arthur (2014)                   1              0           19       22      18
+3 Berenbaum &amp; Hin…                2              0           65.8     18      18
+4 Berenbaum &amp; Sny…                2              0           93.1     19      19
+5 Doering et al (…                1              3           87       15      15
+6 Idle et al. (19…                2              1           46       10      10
+# ℹ 22 more variables: Mean_boys_play_male &lt;dbl&gt;, SD_boys_play_male &lt;dbl&gt;,
+#   Mean_girls_play_male &lt;dbl&gt;, SD_girls_play_male &lt;dbl&gt;,
+#   Mean_boys_play_female &lt;dbl&gt;, SD_boys_play_female &lt;dbl&gt;,
+#   Mean_girls_play_female &lt;dbl&gt;, SD_girls_play_female &lt;dbl&gt;,
+#   `Neutral toys` &lt;dbl&gt;, Year &lt;dbl&gt;, `Parent present` &lt;dbl&gt;, Setting &lt;dbl&gt;,
+#   Country &lt;dbl&gt;, `Case definition adequate` &lt;chr&gt;,
+#   `Representativeness of cases` &lt;chr&gt;, `Selection of controls` &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="the-analysis">THE ANALYSIS</h2>
+<section id="this-a-quote-of-what-the-author-thought" class="level4">
+<h4 class="anchored" data-anchor-id="this-a-quote-of-what-the-author-thought"><em>this a quote of what the author thought</em></h4>
+<blockquote class="blockquote">
+<p>Neutral toys (1 = neutral toys included; 2 = neutral toys not included); Parent present (1 = absent; 2 = minimal interaction; 3 = moderate or full interaction); Setting = location of study (1 = home; 2 = laboratory; 3 = nursery); Country = gender inequality index, a measure of how gender egalitarian the country was at the time the study took place.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Note. Quality is assessed using Newcastle–Ottawa Quality Assessment Scale criteria adapted for this study. A star indicates that the study fulfilled this criterion; an X indicates that the study did not fulfil this criterion. Case definition adequate: clear justification for the gendered nature of a toy, for example, based on research. Representativeness of cases: recruitment of consecutive participants. Selection of controls: whether boys and girls were comparable in terms of social background. Parental opinion: whether parents’ views on gender were measured. Comparability of both groups: the toys were comparable (in size, shape, etc.) and if the boys and girls were comparable in age. Ascertainment of behaviour: Play behaviour was clearly defined. Same ascertainment method for both groups: The measurement of the outcome (time spent playing with toy) was clearly defined. Nonresponse rate: whether either nonuptake or dropout rates reported.</p>
+</blockquote>
+</section>
+</section>
+<section id="data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation">DATA PREPARATION</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">understanding code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">code--</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<section id="understanding-the-code" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-code">Understanding the Code</h3>
+<p>The provided code is used to load and attach multiple R packages using a vector of package names.</p>
+<ol type="1">
+<li><strong><code>lib &lt;- c("metafor", "metadat", "meta")</code></strong>:
+<ul>
+<li><code>lib</code>: This is a variable that holds a vector of package names. The packages to be loaded are “metafor,” “metadat,” and “meta.”</li>
+<li><code>c()</code>: This function creates a vector containing the specified package names.</li>
+</ul></li>
+<li><strong><code>lapply(lib, library, character.only = TRUE)</code></strong>:
+<ul>
+<li><code>lapply()</code>: This function applies another function to each element of the <code>lib</code> vector.</li>
+<li><code>lib</code>: The vector of package names created earlier.</li>
+<li><code>library</code>: The function being applied to each package name. It loads and attaches the specified package.</li>
+<li><code>character.only = TRUE</code>: This argument ensures that only the character strings (package names) are passed to the <code>library()</code> function, preventing any additional arguments from being passed accidentally.</li>
+</ul></li>
+</ol>
+<p>In summary, the provided code loads and attaches the “metafor,” “metadat,” and “meta” packages using the <code>library()</code> function for each package name in the <code>lib</code> vector. This makes the functions and features of these packages available for use in the current R session.</p>
+</section>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lib <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"metafor"</span>,<span class="st">"metadat"</span>,<span class="st">"meta"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(lib, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: metadat</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: numDeriv</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Loading the 'metafor' package (version 4.2-0). For an
+introduction to the package please type: help(metafor)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading 'meta' package (version 6.5-0).
+Type 'help(meta)' for a brief overview.
+Readers of 'Meta-Analysis with R (Use R!)' should install
+older version of 'meta' package: https://tinyurl.com/dt4y5drs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>TE <span class="ot">&lt;-</span> metaanalysis_data<span class="sc">$</span>Mean_boys_play_male</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>seTE <span class="ot">&lt;-</span> metaanalysis_data<span class="sc">$</span>SD_boys_play_male</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"     "readxl"   
+ [7] "stats"     "graphics"  "grDevices" "utils"     "datasets"  "methods"  
+[13] "base"     
+
+[[2]]
+ [1] "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"     "readxl"   
+ [7] "stats"     "graphics"  "grDevices" "utils"     "datasets"  "methods"  
+[13] "base"     
+
+[[3]]
+ [1] "meta"      "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"    
+ [7] "readxl"    "stats"     "graphics"  "grDevices" "utils"     "datasets" 
+[13] "methods"   "base"     </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>lib <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"metafor"</span>,<span class="st">"metadat"</span>,<span class="st">"meta"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(lib, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>TE <span class="ot">&lt;-</span> metaanalysis_data<span class="sc">$</span>Mean_boys_play_male</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>seTE <span class="ot">&lt;-</span> metaanalysis_data<span class="sc">$</span>SD_boys_play_male</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "meta"      "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"    
+ [7] "readxl"    "stats"     "graphics"  "grDevices" "utils"     "datasets" 
+[13] "methods"   "base"     
+
+[[2]]
+ [1] "meta"      "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"    
+ [7] "readxl"    "stats"     "graphics"  "grDevices" "utils"     "datasets" 
+[13] "methods"   "base"     
+
+[[3]]
+ [1] "meta"      "metafor"   "numDeriv"  "metadat"   "Matrix"    "dplyr"    
+ [7] "readxl"    "stats"     "graphics"  "grDevices" "utils"     "datasets" 
+[13] "methods"   "base"     </code></pre>
+</div>
+</div>
+<section id="meta-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="meta-analysis">META ANALYSIS</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">metagen</span>(<span class="at">TE =</span> TE,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">seTE =</span> seTE,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> metaanalysis_data,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">studlab =</span> metaanalysis_data<span class="sc">$</span>Study,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">comb.fixed =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">comb.random =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>m</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of studies: k = 27
+
+                                         95%-CI    z  p-value
+Common effect model 96.0551 [71.9496; 120.1605] 7.81 &lt; 0.0001
+
+Quantifying heterogeneity:
+ tau^2 = 5063.4218 [836.1518; 17480.4313]; tau = 71.1577 [28.9163; 132.2136]
+ I^2 = 48.7% [19.8%; 67.2%]; H = 1.40 [1.12; 1.75]
+
+Test of heterogeneity:
+     Q d.f. p-value
+ 50.67   26  0.0026
+
+Details on meta-analytical method:
+- Inverse variance method
+- Restricted maximum-likelihood estimator for tau^2
+- Q-Profile method for confidence interval of tau^2 and tau</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">INTERPRETATION</h3>
+<p>Number of Studies (k): The meta-analysis includes data from 27 studies.</p>
+<p>Overall Effect Size (Common effect model): The calculated overall effect size is 96.0551, with a confidence interval (95%) ranging from 71.9496 to 120.1605. This effect size represents the combined estimate of the treatment effect across all studies.</p>
+<p>Z-score and p-value: The Z-score is 7.81, and the associated p-value is less than 0.0001. This indicates a statistically significant treatment effect, implying that the observed effect is unlikely to be due to random chance.</p>
+<p>Quantifying Heterogeneity: - Tau^2: The estimated amount of residual heterogeneity (variability between study effect sizes) is 5063.4218. The confidence interval for tau^2 ranges from 836.1518 to 17480.4313. - Tau: The square root of tau^2 is 71.1577, with a confidence interval from 28.9163 to 132.2136. - I^2: The I^2 statistic is 48.7%, suggesting that a moderate portion of the variability in effect sizes is due to true heterogeneity among the studies. - H: The H statistic is 1.40, indicating the presence of heterogeneity. An H value greater than 1 suggests the existence of heterogeneity.</p>
+<p>Test of Heterogeneity: The Q statistic for the test of heterogeneity is 50.67 with 26 degrees of freedom. The associated p-value is 0.0026, indicating significant heterogeneity among the effect sizes across studies.</p>
+<p>This meta study proves that the choice f a toy was not by chance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>m <span class="sc">%&gt;%</span> <span class="fu">forest</span>(<span class="at">sortvar=</span>TE)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Metaanalysisquarto_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The code <code>m %&gt;% forest(sortvar=TE)</code> generates a forest plot using the <code>forest()</code> function from the <code>metafor</code> package in R. Let’s break down what each part of the code does:</p>
+<ul>
+<li><p><code>m</code>: This refers to the variable <code>m</code> which presumably contains the results of the meta-analysis, specifically the output from the <code>metagen()</code> function.</p></li>
+<li><p><code>%&gt;%</code>: This is the pipe operator (<code>%&gt;%</code>), which is used to chain together multiple operations in R. It takes the output of the previous operation and passes it as the first argument to the next operation.</p></li>
+<li><p><code>forest(sortvar=TE)</code>: This is the function call to <code>forest()</code>. Here’s what it does:</p>
+<ul>
+<li><code>forest()</code>: This function generates a forest plot, which is a graphical representation of the effect sizes from each individual study along with their confidence intervals.</li>
+<li><code>sortvar=TE</code>: This argument specifies that the studies should be sorted based on the effect size (TE stands for Treatment Effect), in descending order. This means that studies with larger effect sizes will be placed higher on the plot.</li>
+</ul></li>
+</ul>
+<p>So, in summary, the code generates a forest plot using the results from the meta-analysis stored in the <code>m</code> variable. The plot will display the individual studies’ effect sizes sorted in descending order, along with their confidence intervals.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">funnel plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">FUNEL PLOT</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">FANCY FUNNEL PLOT</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>m <span class="sc">%&gt;%</span> <span class="fu">funnel</span>()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Metaanalysisquarto_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>contour_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.90</span>, <span class="fl">0.95</span>, <span class="fl">0.99</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>contour_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"darkblue"</span>, <span class="st">"blue"</span>, <span class="st">"lightblue"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">funnel</span>(m, <span class="at">contour =</span> contour_levels, <span class="at">col.contour =</span> contour_colors)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="fu">c</span>(<span class="st">"p &lt; 0.10"</span>, <span class="st">"p &lt; 0.05"</span>, <span class="st">"p &lt; 0.01"</span>), <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">fill =</span> contour_colors)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Metaanalysisquarto_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>```</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
