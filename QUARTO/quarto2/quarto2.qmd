@@ -1,0 +1,80 @@
+---
+title: Attack on Titan Report
+author: Your Name
+date: today
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    theme: darkly
+execute:
+  echo: fenced
+  warning: false
+  cache: true 
+  freeze: true
+title-block-banner: true
+title-block-banner-color: grey
+---
+
+# TV Show Report: *Attack on Titan*
+
+![ANIME LOGO](https://upload.wikimedia.org/wikipedia/en/d/df/Humanity_in_Chains.png)
+
+*Attack on Titan* (Japanese: 進撃の巨人, Hepburn: Shingeki no Kyojin) is a Japanese manga series written and illustrated by Hajime Isayama. Set in a world where humanity is forced to live in cities surrounded by three enormous walls that protect them from gigantic man-eating humanoids referred to as Titans; the story follows Eren Yeager, who vows to exterminate the Titans after they bring about the destruction of his hometown and the death of his mother. Serialized in Kodansha's monthly magazine Bessatsu Shōnen Magazine from September 2009 to April 2021, with its chapters collected in 34 tankōbon volumes.
+
+## Anime Adaptation
+
+
+An anime television series was produced by Wit Studio (seasons 1–3) and MAPPA (season 4). The first season, consisting of 25 episodes, was broadcast from April to September 2013. The second season, comprising 12 episodes, aired from April to June 2017. A 22-episode third season was broadcast in two parts; the first 12 episodes aired from July to October 2018, and the last 10 episodes aired from April to July 2019. The fourth and final season premiered in December 2020, airing 16 episodes in its first part. A second part, consisting of 12 episodes, aired from January to April 2022, and a third and final part will air in two halves; the first half premiered in March 2023, with the second half set to premiere in late 2023.
+
+## Success and Awards
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQD_-Li8KxUjORQR8UbYs-iAHXlNg5za74Yw&usqp=CAU)
+
+*Attack on Titan* has achieved both critical acclaim and commercial success. By September 2022, the manga had over 110 million copies in circulation, solidifying its position as one of the best-selling manga series of all time. The series has received numerous awards, including the Kodansha Manga Award, the Attilio Micheluzzi Award, and the Harvey Award.
+
+::: {.panel-tabset}
+
+## Synopsis
+
+### Setting
+
+The story of *Attack on Titan* centers on a civilization within three circular walls. Local knowledge portrays it as the last vestige of human civilization. Inhabitants, known as Eldians, believe that humanity faced near extinction due to the emergence of Titans, humanoid giants that prey on humans. The remnants of humanity retreated behind three concentric walls, enjoying a century of relative peace. Venturing outside the walls is discouraged. To combat Titans, the military employs Vertical Maneuvering Equipment (VME), enabling mobility in three dimensions. Swords and Thunder Spears made of ultrahard steel are used in conjunction.
+
+### Titan Variations
+
+![titan types](https://cdn.rcimg.net/Sushi-chan/images/ffab76bc/9e85a28ea7e9f0c9da40b03edaa1b4f8.gif?width=700)
+
+Titans are classified into Pure Titans and Abnormal Titans, with the Nine Titans being the most powerful. Titan Shifters, like the Attack, Colossal, and Armored Titans, can transform between human and Titan form. These Titans can harden body parts and possess specialized abilities.
+
+### Plot
+
+The story begins with Eren Yeager, whose town is breached by Titans, leading to personal tragedy. He enlists in the military with friends Mikasa Ackerman and Armin Arlert. Over time, Eren discovers his power to transform into a sentient Attack Titan. Memories reveal the truth about their world and the Titans. The Survey Corps aims to reclaim Wall Maria and unveil secrets. Battles with sentient Titans, political unrest, and revelations about Eldians' history unfold. The Rumbling, a genocidal event involving Wall Titans, triggers a global conflict. Eren's plan to spare humanity prompts major confrontations.
+
+
+
+##    CAST 
+
+![all cast](https://i.pinimg.com/originals/12/52/db/1252db1343c70ac41d00642e8d09f127.jpg)
+
+| Character Name        | Voice Actor       |
+|-----------------------|-------------------|
+| Armin Arlert          | Josh Grelle       |
+| Eren Jaeger           | Bryce Papenbrook  |
+| Eren Yeager           | Yûki Kaji         |
+| Mikasa Ackerman       | Yui Ishikawa      |
+| Jean Kirstein         | Kishô Taniyama    |
+| Connie Springer       | Hiro Shimono      |
+| Hange Zoe             | Romi Park         |
+| Levi                  | Hiroshi Kamiya    |
+| Reiner Braun          | Yoshimasa Hosoya  |
+| Sasha Braus           | Yû Kobayashi      |
+| Connie Springer       | Clifford Chapin   |
+| Jean Kirschtein       | Mike McFarland    |
+| Hange Zoe             | Matthew Mercer    |
+| Sasha Braus           | Ashly Burch       |
+:::
+
+---
+
+*all copy rights observed*
