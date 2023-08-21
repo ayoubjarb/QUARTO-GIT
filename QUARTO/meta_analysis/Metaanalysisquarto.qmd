@@ -1,6 +1,6 @@
 ---
 title: "Metaanalysis in R"
-author: "quantmit"
+author: "ayoub"
 date: today
 format:  
   html:
